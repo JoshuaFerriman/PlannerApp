@@ -3,9 +3,19 @@
 #include <vector>
 #include <string>
 
+struct Field 
+{
+	std::string fieldName;
+	std::string fieldType;
+
+};
+
 struct Table
 {
 	std::string tableName;
+
+	std::vector<Field> fields;
+
 	std::string sqlCreateStatement;
 	std::string sqlInsertStatement;
 	std::string sqlSelectStatement;
@@ -24,7 +34,7 @@ public:
 
 	//Functions
 private:
-	int StartDB();
+	int StartDB(std::string dbName);
 	void CloseDB();
 	static int callback(void* data, int argc, char** argv, char** azColName);
 
@@ -34,6 +44,7 @@ private:
 
 public:
 	DatabaseAccessor();
+	DatabaseAccessor(std::string dbName);
 	~DatabaseAccessor();
 	int ReloadDB();
 

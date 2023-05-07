@@ -6,16 +6,14 @@
 
 
 
-
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "DataBaseAccessor.h"
 #include "Project.h"
-
+#include "User.h"
 
 // Vertex Shader source code
 const char* vertexShaderSource = "#version 330 core\n"
@@ -133,8 +131,17 @@ int main()
 
     bool drawTriangle = true;
 
+    DatabaseAccessor databaseAccessor("test");
+    databaseAccessor.CreateTable(users);
+
     bool authenticated = false;
     bool newProject = false;
+    bool loginWindow = false;
+    bool newUser = false;
+
+    std::string username = "";
+    std::string password = "";
+
     std::vector<Project> projects = {};
 
     while (!glfwWindowShouldClose(window))
@@ -177,27 +184,113 @@ int main()
                 ImGui::EndMenu();
             }
 
-            /*
+
+            
             if (authenticated && ImGui::BeginMenu("User"))
             {
-
+                if (ImGui::MenuItem("Logout")) { authenticated = false; }
+                ImGui::EndMenu();
             }
-            if (!authenticated && ImGui::BeginMenu("Login"))
-            {
-                char username[32];
-                char password[32];
-
-              
-               
-                ImGui::Text("Username:");
-                //if (ImGui::InputText("##username", username, IM_ARRAYSIZE(username))) {}
-                ImGui::Text("Password:");
-                //if (ImGui::InputText("##password", password, IM_ARRAYSIZE(password))) {}
-
+            if (!authenticated && ImGui::BeginMenu("Login")) 
+            {  
+                
+                if (ImGui::MenuItem("Login")) { loginWindow = true; }
+                if (ImGui::MenuItem("Create account")) { newUser = true; }
+                ImGui::EndMenu();
             }
-            */
+            
             ImGui::EndMainMenuBar();
             
+        }
+
+        if (loginWindow)
+        {
+            char usernameBuff[32] = "";
+            char passwordBuff[32] = "";
+
+            strncpy_s(usernameBuff, username.c_str(), sizeof(usernameBuff));
+            strncpy_s(passwordBuff, password.c_str(), sizeof(passwordBuff));
+
+            ImGui::Begin("Login");
+
+            ImGui::Text("Username:");
+            ImGui::InputText("##username", usernameBuff, IM_ARRAYSIZE(usernameBuff));
+            username = usernameBuff;
+            ImGui::Text("Password:");
+            ImGui::InputText("##password", passwordBuff, IM_ARRAYSIZE(passwordBuff));
+            password = passwordBuff;
+
+            
+
+            if (ImGui::Button("Login"))
+            { 
+                strcpy_s(usernameBuff, "");
+                strcpy_s(passwordBuff, "");
+
+                User user(username, password);       
+                if (user.UserLogin(databaseAccessor))
+                {
+                    password = "";
+                    username = "";
+
+                    authenticated = true;
+                    loginWindow = false;
+                }
+                else
+                {
+                    std::cout << "Login Failed";
+                    authenticated = false;
+                    loginWindow = false;
+
+                }
+            }
+
+            ImGui::End();
+        }
+
+        if (newUser)
+        {
+            char usernameBuff[32] = "";
+            char passwordBuff[32] = "";
+
+            strncpy_s(usernameBuff, username.c_str(), sizeof(usernameBuff));
+            strncpy_s(passwordBuff, password.c_str(), sizeof(passwordBuff));
+
+            ImGui::Begin("Create Account");
+
+            ImGui::Text("Username:");
+            ImGui::InputText("##username", usernameBuff, IM_ARRAYSIZE(usernameBuff));
+            username = usernameBuff;
+            ImGui::Text("Password:");
+            ImGui::InputText("##password", passwordBuff, IM_ARRAYSIZE(passwordBuff));
+            password = passwordBuff;
+
+
+
+            if (ImGui::Button("Login"))
+            {
+                strcpy_s(usernameBuff, "");
+                strcpy_s(passwordBuff, "");
+
+                User user(username, password);
+                if (user.UserLogin(databaseAccessor))
+                {
+                    password = "";
+                    username = "";
+
+                    authenticated = true;
+                    loginWindow = false;
+                }
+                else
+                {
+                    std::cout << "Login Failed";
+                    authenticated = false;
+                    loginWindow = false;
+
+                }
+            }
+
+            ImGui::End();
         }
 
         for (Project project : projects)
@@ -251,9 +344,6 @@ int main()
         glfwPollEvents();
     }
 
-
-    DatabaseAccessor databaseAccessor;
-
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
@@ -268,6 +358,9 @@ int main()
     // Terminate GLFW before ending the program
     glfwTerminate();
     return 0;
+
+
+
     /*ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
     ImGui::SliderFloat("float", &f, 0.0f, 1.0f);*/
     

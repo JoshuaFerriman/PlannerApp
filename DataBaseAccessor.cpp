@@ -2,7 +2,12 @@
 
 DatabaseAccessor::DatabaseAccessor()
 {
-    StartDB();
+    StartDB("test");
+}
+
+DatabaseAccessor::DatabaseAccessor(std::string dbName)
+{
+    StartDB(dbName);
 }
 
 DatabaseAccessor::~DatabaseAccessor()
@@ -22,16 +27,17 @@ int DatabaseAccessor::callback(void* data, int argc, char** argv, char** azColNa
     return 0;
 }
 
-int DatabaseAccessor::StartDB()
+int DatabaseAccessor::StartDB(std::string dbName)
 {
    /* Open database */
-   rc = sqlite3_open("test.db", &db);
+   rc = sqlite3_open((dbName + ".db").data(), &db);
    
    if( rc ) {
       fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
       return(0);
    } else {
       fprintf(stdout, "Opened database successfully\n");
+      return(0);
    }
 
 }
@@ -45,7 +51,7 @@ void DatabaseAccessor::CloseDB()
 int DatabaseAccessor::ReloadDB()
 {
     CloseDB();
-    return StartDB();
+    return StartDB("test");
 
 }
 

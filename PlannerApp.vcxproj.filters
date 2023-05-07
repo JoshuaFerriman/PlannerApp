@@ -75,6 +75,9 @@
     <ClCompile Include="libraries\include\sqlite3\sqlite3.c">
       <Filter>Source Files\sqlite3</Filter>
     </ClCompile>
+    <ClCompile Include="User.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Project.h">
@@ -118,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="libraries\include\imgui\imgui_impl_opengl3_loader.h">
       <Filter>Header Files\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="User.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
