@@ -55,10 +55,26 @@ int DatabaseAccessor::ReloadDB()
 
 }
 
-void DatabaseAccessor::CreateTable(Table table)
+void DatabaseAccessor::CreateTable(const Table& table)
 {
     /* Execute SQL statement */
-    rc = sqlite3_exec(db, table.sqlCreateStatement.c_str(), callback, 0, &zErrMsg);
+
+    std::string sqlCreateStatement = "CREATE TABLE " + table.tableName + " (\n";
+    for (size_t i = 0; i < table.fields.size(); ++i)
+    {
+        sqlCreateStatement += "\t" + table.fields[i].fieldName + " " + table.fields[i].fieldType;
+
+        if (i != table.fields.size() - 1)  // Check if it is not the last field
+            sqlCreateStatement += ",\n";
+    }
+
+    sqlCreateStatement += "\n);";
+
+
+
+
+
+    rc = sqlite3_exec(db, sqlCreateStatement.c_str(), callback, 0, &zErrMsg);
 
     if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL error: %s\n", zErrMsg);

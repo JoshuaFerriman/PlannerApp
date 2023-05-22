@@ -19,7 +19,7 @@ class User
 	//Fields
 protected:
 	std::string username;
-	std::string password;
+	std::string hashedPassword;
 	std::string salt;
 
 public:
@@ -27,13 +27,14 @@ public:
 	//Functions
 protected:
 	std::string GenerateSalt();
-	void SaltAndHashPassword();
+	std::string SaltAndHashPassword(std::string password);
 	bool AssertUsernameAndPass(DatabaseAccessor& databaseAccessor);
 
 public:
-	User(std::string username, std::string password, bool salt = false);
+	User();
+	User(std::string username, std::string password);
 	bool UserLogin(DatabaseAccessor& databaseAccessor);
-	bool UserCreate(DatabaseAccessor& databaseAccessor)
+	bool UserCreate(DatabaseAccessor& databaseAccessor);
 	
-
+	void TestGenerateSalt();
 };

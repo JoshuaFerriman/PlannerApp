@@ -16,7 +16,6 @@ struct Table
 
 	std::vector<Field> fields;
 
-	std::string sqlCreateStatement;
 	std::string sqlInsertStatement;
 	std::string sqlSelectStatement;
 };
@@ -48,7 +47,7 @@ public:
 	~DatabaseAccessor();
 	int ReloadDB();
 
-	void CreateTable(Table table);
+	void CreateTable(const Table& table);
 	void TableINSERT(Table table, std::vector<std::string> sqlInsertStatements);
 	void TableSELECT(char* sqlSelectStatement);
 	void TableSELECT(Table table);

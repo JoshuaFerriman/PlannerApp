@@ -31,6 +31,12 @@
     <Filter Include="Header Files\imgui">
       <UniqueIdentifier>{c3957c39-7dc6-4d18-9616-a836652eb681}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\hashLibrary">
+      <UniqueIdentifier>{fde7ea24-435e-4ac3-aaef-28ade3fb17ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\hashLibrary">
+      <UniqueIdentifier>{abf2ae27-41eb-445e-ad21-16161c84880a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PlannerApp.cpp">
@@ -78,6 +84,24 @@
     <ClCompile Include="User.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="libraries\include\hash-library\sha3.cpp">
+      <Filter>Source Files\hashLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\hash-library\sha256.cpp">
+      <Filter>Source Files\hashLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\hash-library\crc32.cpp">
+      <Filter>Source Files\hashLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\hash-library\keccak.cpp">
+      <Filter>Source Files\hashLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\hash-library\md5.cpp">
+      <Filter>Source Files\hashLibrary</Filter>
+    </ClCompile>
+    <ClCompile Include="libraries\include\hash-library\sha1.cpp">
+      <Filter>Source Files\hashLibrary</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Project.h">
@@ -123,6 +147,33 @@
       <Filter>Header Files\imgui</Filter>
     </ClInclude>
     <ClInclude Include="User.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\hash-library\md5.h">
+      <Filter>Header Files\hashLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\hash-library\sha1.h">
+      <Filter>Header Files\hashLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\hash-library\sha3.h">
+      <Filter>Header Files\hashLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\hash-library\sha256.h">
+      <Filter>Header Files\hashLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\hash-library\crc32.h">
+      <Filter>Header Files\hashLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\hash-library\hash.h">
+      <Filter>Header Files\hashLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\hash-library\hmac.h">
+      <Filter>Header Files\hashLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="libraries\include\hash-library\keccak.h">
+      <Filter>Header Files\hashLibrary</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

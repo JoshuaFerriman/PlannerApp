@@ -1,14 +1,19 @@
 #include "User.h"
+#include <iostream>
 
+#define SALT_LENGTH 10
 
-User::User(std::string username, std::string password, bool salt)
+User::User(std::string username, std::string password)
 {
 	User::username = username;
-	User::password = password;
+	User::salt, salt = GenerateSalt();
+	User::hashedPassword = SaltAndHashPassword(password);
 
-	if (salt = true) {
-		User::salt = GenerateSalt();
-	}
+}
+
+User::User()
+{
+
 }
 
 /*
@@ -24,20 +29,48 @@ std::string User::SHA256(std::string data)
 }
 */
 
+void User::TestGenerateSalt() {
+	// Call the private GenerateSalt function
+	std::string salt = GenerateSalt();
+
+	// Output the salt to the console
+	std::cout << "Generated Salt: " << salt << std::endl;
+}
+
 std::string User::GenerateSalt()
 {
+	static std::default_random_engine generator(std::random_device{}());
+
+	std::uniform_int_distribution<int> distribution(32, 126);
+
 	std::string temp;
-	std::default_random_engine generator;
-	std::uniform_int_distribution<int> distribution(1, 6);
-	temp = std::to_string(distribution(generator));
+
+	for (int i = 0; i < SALT_LENGTH; i++)
+	{
+		temp += static_cast<char>(distribution(generator));
+	}
+	
+
 	return temp;
+}
+
+std::string User::SaltAndHashPassword(std::string password)
+{
+	SHA256 sha256;
+
+	std::string digest = password + User::salt;
+
+	digest = sha256(digest);
+
+	return digest;
+
 }
 
 bool User::AssertUsernameAndPass(DatabaseAccessor &databaseAccessor)
 {
 	std::string sqlStatement = 
 	{ 
-		"SELECT PASSWORD,SALT  from USERS" \
+		"SELECT PASSWORD,SALT from USERS " \
 						 
 		"WHERE USERNAME = '" + User::username + "'"
 	};
@@ -54,4 +87,11 @@ bool User::UserLogin(DatabaseAccessor& databaseAccessor)
 	login = AssertUsernameAndPass(databaseAccessor);
 
 	return login;
+}
+
+bool User::UserCreate(DatabaseAccessor& databaseAccessor)
+{
+
+
+	return true;
 }

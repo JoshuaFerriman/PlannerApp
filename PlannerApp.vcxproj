@@ -144,6 +144,12 @@
     <ClCompile Include="DataBaseAccessor.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="GUI.cpp" />
+    <ClCompile Include="libraries\include\hash-library\crc32.cpp" />
+    <ClCompile Include="libraries\include\hash-library\keccak.cpp" />
+    <ClCompile Include="libraries\include\hash-library\md5.cpp" />
+    <ClCompile Include="libraries\include\hash-library\sha1.cpp" />
+    <ClCompile Include="libraries\include\hash-library\sha256.cpp" />
+    <ClCompile Include="libraries\include\hash-library\sha3.cpp" />
     <ClCompile Include="libraries\include\imgui\imgui.cpp" />
     <ClCompile Include="libraries\include\imgui\imgui_demo.cpp" />
     <ClCompile Include="libraries\include\imgui\imgui_draw.cpp" />
@@ -159,7 +165,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataBaseAccessor.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="libraries\include\glad\glad.h" />
+    <ClInclude Include="libraries\include\hash-library\crc32.h" />
+    <ClInclude Include="libraries\include\hash-library\hash.h" />
+    <ClInclude Include="libraries\include\hash-library\hmac.h" />
+    <ClInclude Include="libraries\include\hash-library\keccak.h" />
+    <ClInclude Include="libraries\include\hash-library\md5.h" />
+    <ClInclude Include="libraries\include\hash-library\sha1.h" />
+    <ClInclude Include="libraries\include\hash-library\sha256.h" />
+    <ClInclude Include="libraries\include\hash-library\sha3.h" />
     <ClInclude Include="libraries\include\imgui\imconfig.h" />
     <ClInclude Include="libraries\include\imgui\imgui.h" />
     <ClInclude Include="libraries\include\imgui\imgui_impl_glfw.h" />
