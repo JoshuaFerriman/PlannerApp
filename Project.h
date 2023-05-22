@@ -1,6 +1,16 @@
 #pragma once
 #include "SubGoal.h"
 
+static const Table projects
+{
+	"PROJECTS",
+	{
+		{"USERNAME", "TEXT"},
+		{"PASSWORD", "TEXT"},
+		{"SALT", "TEXT"},
+	},
+};
+
 class Project: public SubGoal
 {
 //Member Fields

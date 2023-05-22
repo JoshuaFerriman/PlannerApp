@@ -11,6 +11,11 @@ int main()
     DatabaseAccessor databaseAccessor("test");
     databaseAccessor.CreateTable(users);
 
+    std::vector<std::string> fieldValues = { "JohnDoe", "password123", "abcd1234" };
+
+    databaseAccessor.TableINSERT(users, fieldValues);
+
+
     User user;
     user.TestGenerateSalt();
     user.TestGenerateSalt();

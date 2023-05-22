@@ -5,6 +5,16 @@
 #include <vector>
 #include <ctime>
 
+static const Table subGoals
+{
+	"SUBGOALS",
+	{
+		{"USERNAME", "TEXT"},
+		{"PASSWORD", "TEXT"},
+		{"SALT", "TEXT"},
+	},
+};
+
 class SubGoal
 {
 	//Member Fields

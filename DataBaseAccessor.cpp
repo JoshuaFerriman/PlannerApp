@@ -1,13 +1,16 @@
 #include "DataBaseAccessor.h"
+#include <iostream>
 
 DatabaseAccessor::DatabaseAccessor()
 {
-    StartDB("test");
+    DatabaseAccessor::dbName = "test";
+    StartDB();
 }
 
-DatabaseAccessor::DatabaseAccessor(std::string dbName)
+DatabaseAccessor::DatabaseAccessor(const std::string& dbName)
 {
-    StartDB(dbName);
+    DatabaseAccessor::dbName = dbName;
+    StartDB();
 }
 
 DatabaseAccessor::~DatabaseAccessor()
@@ -27,7 +30,7 @@ int DatabaseAccessor::callback(void* data, int argc, char** argv, char** azColNa
     return 0;
 }
 
-int DatabaseAccessor::StartDB(std::string dbName)
+int DatabaseAccessor::StartDB()
 {
    /* Open database */
    rc = sqlite3_open((dbName + ".db").data(), &db);
@@ -51,7 +54,7 @@ void DatabaseAccessor::CloseDB()
 int DatabaseAccessor::ReloadDB()
 {
     CloseDB();
-    return StartDB("test");
+    return StartDB();
 
 }
 
@@ -67,45 +70,82 @@ void DatabaseAccessor::CreateTable(const Table& table)
         if (i != table.fields.size() - 1)  // Check if it is not the last field
             sqlCreateStatement += ",\n";
     }
-
     sqlCreateStatement += "\n);";
-
-
-
-
 
     rc = sqlite3_exec(db, sqlCreateStatement.c_str(), callback, 0, &zErrMsg);
 
-    if (rc != SQLITE_OK) {
+    if (rc != SQLITE_OK) 
+    {
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
     }
-    else {
+    else 
+    {
         fprintf(stdout, "Table created successfully\n");
-   }
+    }
 }
 
-void DatabaseAccessor::TableINSERT(Table table, std::vector<std::string> sqlInsertStatements)
+void DatabaseAccessor::TableINSERT(const Table& table, std::vector<std::string>& fieldValues)
 {
-    /* Create SQL statement */
-    std::string sqlStatement = "";
-    for (std::string sqlInsertStatement : sqlInsertStatements)
-    { 
-        sqlStatement += table.sqlInsertStatement + sqlInsertStatement;
+    std::string insertStatement = "INSERT INTO " + table.tableName + " (";
+    std::string valuesStatement = "VALUES (";
+
+    // Build the INSERT and VALUES statements
+    for (size_t i = 0; i < table.fields.size(); ++i)
+    {
+        insertStatement += table.fields[i].fieldName;
+        valuesStatement += "?";
+
+        if (i != table.fields.size() - 1)
+        {
+            insertStatement += ", ";
+            valuesStatement += ", ";
+        }
     }
 
-   /* Execute SQL statement */
-   rc = sqlite3_exec(db, sqlStatement.c_str(), callback, 0, &zErrMsg);
-   
-   if( rc != SQLITE_OK ){
-      fprintf(stderr, "SQL error: %s\n", zErrMsg);
-      sqlite3_free(zErrMsg);
-   } else {
-      fprintf(stdout, "Records created successfully\n");
-   }
+    insertStatement += ") " + valuesStatement + ");";
+
+    // Prepare the INSERT statement
+    sqlite3_stmt* stmt;
+    rc = sqlite3_prepare_v2(db, insertStatement.c_str(), -1, &stmt, nullptr);
+
+    if (rc != SQLITE_OK)
+    {
+        std::cerr << "Failed to prepare statement: " << sqlite3_errmsg(db) << std::endl;
+        sqlite3_close(db);
+        return;
+    }
+
+    // Bind the field values to the prepared statement
+    for (size_t i = 0; i < table.fields.size(); ++i)
+    {
+        rc = sqlite3_bind_text(stmt, i + 1, fieldValues[i].c_str(), -1, SQLITE_STATIC);
+
+        if (rc != SQLITE_OK)
+        {
+            std::cerr << "Failed to bind value: " << sqlite3_errmsg(db) << std::endl;
+            sqlite3_finalize(stmt);
+            sqlite3_close(db);
+            return;
+        }
+    }
+
+    // Execute the INSERT statement
+    rc = sqlite3_step(stmt);
+
+    if (rc != SQLITE_DONE)
+    {
+        std::cerr << "Failed to execute statement: " << sqlite3_errmsg(db) << std::endl;
+    }
+    else
+    {
+        std::cout << "Record inserted successfully!" << std::endl;
+    }
+
+    // Clean up
+    sqlite3_finalize(stmt);
+
 }
-
-
 
 
 void DatabaseAccessor::TableSELECT(char* sqlSelectStatement)
@@ -124,7 +164,8 @@ void DatabaseAccessor::TableSELECT(char* sqlSelectStatement)
     }
 }
 
-void DatabaseAccessor::TableSELECT(Table table)
+
+void DatabaseAccessor::TableSELECT(const Table& table)
 {
     const char* data = "Callback function called";
     std::string sqlSelectStatement = "SELECT * from " + table.tableName;

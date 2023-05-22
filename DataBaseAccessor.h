@@ -16,7 +16,6 @@ struct Table
 
 	std::vector<Field> fields;
 
-	std::string sqlInsertStatement;
 	std::string sqlSelectStatement;
 };
 
@@ -30,10 +29,11 @@ private:
    int rc;
 
 public:
+	std::string dbName;
 
 	//Functions
 private:
-	int StartDB(std::string dbName);
+	int StartDB();
 	void CloseDB();
 	static int callback(void* data, int argc, char** argv, char** azColName);
 
@@ -43,14 +43,14 @@ private:
 
 public:
 	DatabaseAccessor();
-	DatabaseAccessor(std::string dbName);
+	DatabaseAccessor(const std::string& dbName);
 	~DatabaseAccessor();
 	int ReloadDB();
 
 	void CreateTable(const Table& table);
-	void TableINSERT(Table table, std::vector<std::string> sqlInsertStatements);
+	void TableINSERT(const Table& table, std::vector<std::string>& fieldValues);
 	void TableSELECT(char* sqlSelectStatement);
-	void TableSELECT(Table table);
+	void TableSELECT(const Table& table);
 	void TableUPDATE(char* sqlUpdateStatement);
 	void TableDELETE(char* sqlDeleteStatement);
 };
