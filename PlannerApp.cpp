@@ -6,22 +6,16 @@
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    DatabaseAccessor databaseAccessor;
 
-    DatabaseAccessor databaseAccessor("test");
     databaseAccessor.CreateTable(users);
 
-    std::vector<std::string> fieldValues = { "JohnDoe", "password123", "abcd1234" };
+    User user(databaseAccessor, "JohnDoe", "password123");
+    
+    databaseAccessor.TableSELECTAll(users);
 
-    databaseAccessor.TableINSERT(users, fieldValues);
 
-
-    User user;
-    user.TestGenerateSalt();
-    user.TestGenerateSalt();
-    user.TestGenerateSalt();
-
-    GUI gui;
+    GUI gui(databaseAccessor);
     gui.InitialiseGUI();
     gui.MainLoop();
     gui.CloseGUI();
@@ -29,36 +23,6 @@ int main()
     return 0;
 
 
-
-    /*ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
-    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);*/
-    
-    /*Table users{
-      "USERS",
-      "CREATE TABLE USERS("  \
-      "ID INT PRIMARY KEY     NOT NULL," \
-      "NAME           TEXT    NOT NULL," \
-      "PASS           TEXT    NOT NULL);",
-      "INSERT INTO USERS(ID, NAME, PASS)",
-      "SELECT * from USERS"
-    };*/
-
-    /*databaseAccessor.CreateTable(users);*/
-    
-
-  /*  std::vector<std::string> sql{
-    "VALUES (1, 'Paul', 'Blue'); ",
-    "VALUES (2, 'Allen', 'Goosberries'); ",
-    "VALUES (3, 'Teddy', 'Ripe');",
-    "VALUES (4, 'Mark', 'Yellow');"
-    };*/
-
-
-    /*databaseAccessor.TableINSERT(users, sql);
-
-    std::string sqlSelectStatement = "SELECT * from USERS";
-
-    databaseAccessor.TableSELECT(users);*/
 
 }
 

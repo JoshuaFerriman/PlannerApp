@@ -24,8 +24,9 @@ GLfloat vertices[] =
     0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f // Upper corner
 };
 
-GUI::GUI()
+GUI::GUI(DatabaseAccessor& databaseAccessor) : databaseAccessor(databaseAccessor)
 {
+    GUI::databaseAccessor = databaseAccessor;
 
 
 }
@@ -131,7 +132,7 @@ void GUI::MainLoop()
     std::string username = "";
     std::string password = "";
 
-    std::vector<Project> projects = {};
+    
 
 
 
@@ -177,7 +178,7 @@ void GUI::MainLoop()
 
 
 
-            if (authenticated && ImGui::BeginMenu("User"))
+            if (authenticated && ImGui::BeginMenu(currentUser.GetUsername().c_str()))
             {
                 if (ImGui::MenuItem("Logout")) { authenticated = false; }
                 ImGui::EndMenu();
@@ -218,12 +219,9 @@ void GUI::MainLoop()
                 strcpy_s(usernameBuff, "");
                 strcpy_s(passwordBuff, "");
 
-                User user(username, password);
-                if (user.UserLogin(databaseAccessor))
+                if (User::UserLogin(databaseAccessor, username, password, &currentUser))
                 {
-                    password = "";
-                    username = "";
-
+                    GUI::DBGetProjects();
                     authenticated = true;
                     loginWindow = false;
                 }
@@ -231,9 +229,9 @@ void GUI::MainLoop()
                 {
                     std::cout << "Login Failed";
                     authenticated = false;
-                    loginWindow = false;
-
                 }
+                password = "";
+                username = "";
             }
 
             ImGui::End();
@@ -262,8 +260,8 @@ void GUI::MainLoop()
                 strcpy_s(usernameBuff, "");
                 strcpy_s(passwordBuff, "");
 
-                User user(username, password);
-                if (user.UserCreate(databaseAccessor))
+                User user(databaseAccessor, username, password);
+                if (true)
                 {
                     password = "";
                     username = "";
@@ -350,4 +348,23 @@ void GUI::CloseGUI()
     glfwDestroyWindow(window);
     // Terminate GLFW before ending the program
     glfwTerminate();
+}
+
+//DatabaseAccessor& databaseAccessor, std::vector<Project>* projects, User* currentUser
+void GUI::DBGetProjects()
+{
+    std::string sqlStatement =
+    {
+        "SELECT * from GOALS " \
+
+        "WHERE USERNAME = '" + currentUser.GetUsername() + "' AND PARENT_ID IS NULL;"
+    };
+
+    std::vector<std::vector<std::string>> projectRecords;
+    projectRecords = databaseAccessor.TableSELECTWhere(sqlStatement.data());
+
+    for (std::vector<std::string>projectRecord : projectRecords)
+    {
+        projects.push_back(Goal());
+    }
 }

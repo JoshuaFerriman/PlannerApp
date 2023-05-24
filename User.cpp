@@ -3,18 +3,29 @@
 
 #define SALT_LENGTH 10
 
-User::User(std::string username, std::string password)
+User::User(DatabaseAccessor& databaseAccessor, std::string username, std::string password)
 {
 	User::username = username;
-	User::salt, salt = GenerateSalt();
-	User::hashedPassword = SaltAndHashPassword(password);
+	User::salt = GenerateSalt();
+	// std::cout << salt << "\n";
+	User::hashedPassword = SaltAndHashPassword(password, User::salt);
+	// std::cout << hashedPassword << "\n";
 
+
+	UserCreateRecord(databaseAccessor);
 }
 
 User::User()
 {
 
 }
+
+std::string User::GetUsername()
+{
+	return User::username;
+}
+
+
 
 /*
 std::string User::SHA256(std::string data)
@@ -54,11 +65,11 @@ std::string User::GenerateSalt()
 	return temp;
 }
 
-std::string User::SaltAndHashPassword(std::string password)
+std::string User::SaltAndHashPassword(std::string password, std::string salt)
 {
 	SHA256 sha256;
 
-	std::string digest = password + User::salt;
+	std::string digest = password + salt;
 
 	digest = sha256(digest);
 
@@ -68,30 +79,57 @@ std::string User::SaltAndHashPassword(std::string password)
 
 bool User::AssertUsernameAndPass(DatabaseAccessor &databaseAccessor)
 {
-	std::string sqlStatement = 
-	{ 
-		"SELECT PASSWORD,SALT from USERS " \
-						 
-		"WHERE USERNAME = '" + User::username + "'"
-	};
+
 	
-	databaseAccessor.TableSELECT(sqlStatement.data()); 
 
 	return true;
 }
 
-bool User::UserLogin(DatabaseAccessor& databaseAccessor)
+bool User::UserLogin(DatabaseAccessor& databaseAccessor, std::string username, std::string password, User* currentUser)
 {
 	bool login = false;
 
-	login = AssertUsernameAndPass(databaseAccessor);
+
+	std::string sqlStatement =
+	{
+		"SELECT * from USERS " \
+
+		"WHERE USERNAME = '" + username + "';"
+	};
+
+	std::vector<std::vector<std::string>> userPassAndSalt;
+	userPassAndSalt = databaseAccessor.TableSELECTWhere(sqlStatement.data());
+
+	if (userPassAndSalt.size() == 1)
+	{
+		std::string hashedPW = userPassAndSalt[0][1];
+		std::string salt = userPassAndSalt[0][2];
+		if (hashedPW == SaltAndHashPassword(password, salt))
+		{
+			login = true;
+			
+			currentUser->hashedPassword = hashedPW;
+			currentUser->username = userPassAndSalt[0][0];
+			currentUser->salt = salt;
+		}
+	}
+	else
+	{
+		std::cout << "Login failed, username not recognised";
+	}
+
+
+
+
 
 	return login;
 }
 
-bool User::UserCreate(DatabaseAccessor& databaseAccessor)
+bool User::UserCreateRecord(DatabaseAccessor& databaseAccessor)
 {
+	std::vector<std::string> fieldValues = { User::username, User::hashedPassword, User::salt };
 
+	databaseAccessor.TableINSERT(users, fieldValues);
 
 	return true;
 }

@@ -7,6 +7,7 @@ struct Field
 {
 	std::string fieldName;
 	std::string fieldType;
+	bool isUnique = false;
 
 };
 
@@ -19,6 +20,7 @@ struct Table
 	std::string sqlSelectStatement;
 };
 
+static std::vector<std::vector<std::string>> resultSet;
 
 class DatabaseAccessor
 {
@@ -29,6 +31,7 @@ private:
    int rc;
 
 public:
+	
 	std::string dbName;
 
 	//Functions
@@ -36,6 +39,7 @@ private:
 	int StartDB();
 	void CloseDB();
 	static int callback(void* data, int argc, char** argv, char** azColName);
+	static int callbackGetData(void* data, int argc, char** argv, char** azColName);
 
 	
 
@@ -48,10 +52,14 @@ public:
 	int ReloadDB();
 
 	void CreateTable(const Table& table);
+
 	void TableINSERT(const Table& table, std::vector<std::string>& fieldValues);
-	void TableSELECT(char* sqlSelectStatement);
-	void TableSELECT(const Table& table);
+
+	std::vector<std::vector<std::string>> TableSELECTWhere(char* sqlSelectStatement);
+	void TableSELECTAll(const Table& table);
+
 	void TableUPDATE(char* sqlUpdateStatement);
+
 	void TableDELETE(char* sqlDeleteStatement);
 };
 

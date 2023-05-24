@@ -18,6 +18,8 @@ DatabaseAccessor::~DatabaseAccessor()
     CloseDB();
 }
 
+
+
 int DatabaseAccessor::callback(void* data, int argc, char** argv, char** azColName) {
     int i;
     fprintf(stderr, "%s: ", (const char*)data);
@@ -29,6 +31,21 @@ int DatabaseAccessor::callback(void* data, int argc, char** argv, char** azColNa
     printf("\n");
     return 0;
 }
+
+int DatabaseAccessor::callbackGetData(void* data, int argc, char** argv, char** azColName) {
+    
+    std::vector<std::string> rowValues;
+
+    for (int i = 0; i < argc; ++i)
+    {
+        std::string columnValue = argv[i] ? argv[i] : "";
+        rowValues.push_back(columnValue);
+    }
+
+    resultSet.push_back(rowValues);
+    return 0;
+}
+
 
 int DatabaseAccessor::StartDB()
 {
@@ -66,7 +83,8 @@ void DatabaseAccessor::CreateTable(const Table& table)
     for (size_t i = 0; i < table.fields.size(); ++i)
     {
         sqlCreateStatement += "\t" + table.fields[i].fieldName + " " + table.fields[i].fieldType;
-
+        if (table.fields[i].isUnique) // Add Unique flag if the struct defines it as unique
+            sqlCreateStatement += " UNIQUE";
         if (i != table.fields.size() - 1)  // Check if it is not the last field
             sqlCreateStatement += ",\n";
     }
@@ -147,25 +165,29 @@ void DatabaseAccessor::TableINSERT(const Table& table, std::vector<std::string>&
 
 }
 
-
-void DatabaseAccessor::TableSELECT(char* sqlSelectStatement)
+std::vector<std::vector<std::string>> DatabaseAccessor::TableSELECTWhere(char* sqlSelectStatement)
 {
-    const char* data = "Callback function called";
+    std::vector<std::vector<std::string>> tempResultSet;
+    const char* data = "Callback function called ";
 
     /* Execute SQL statement */
-    rc = sqlite3_exec(db, sqlSelectStatement, callback, (void*)data, &zErrMsg);
+    rc = sqlite3_exec(db, sqlSelectStatement, callbackGetData, (void*)data, &zErrMsg);
 
     if (rc != SQLITE_OK) {
         fprintf(stderr, "SQL error: %s\n", zErrMsg);
         sqlite3_free(zErrMsg);
+        resultSet.clear();
     }
     else {
         fprintf(stdout, "Operation done successfully\n");
+        tempResultSet = resultSet;
+        resultSet.clear();
     }
+    return tempResultSet;
 }
 
 
-void DatabaseAccessor::TableSELECT(const Table& table)
+void DatabaseAccessor::TableSELECTAll(const Table& table)
 {
     const char* data = "Callback function called";
     std::string sqlSelectStatement = "SELECT * from " + table.tableName;

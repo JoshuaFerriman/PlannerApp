@@ -9,7 +9,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Project.h"
+#include "Goal.h"
 #include "User.h"
 
 
@@ -17,13 +17,14 @@ class GUI
 {
 	//Fields
 public:
-
+	User currentUser = User();
+	std::vector<Goal> projects = {};
 private:
 	GLFWwindow* window;
 	GLuint vertexShader;
 	GLuint fragmentShader;
 	GLuint shaderProgram;
-	DatabaseAccessor databaseAccessor;
+	DatabaseAccessor& databaseAccessor;
 
 	// Create reference containers for the Vartex Array Object and the Vertex Buffer Object
 	GLuint VAO, VBO;
@@ -31,10 +32,11 @@ private:
 	//Functions
 public:
 	GUI();
+	GUI(DatabaseAccessor& databaseAccessor);
 	void InitialiseGUI();
 	void MainLoop();
 	void CloseGUI();
 
 private:
-
+	void DBGetProjects()
 };

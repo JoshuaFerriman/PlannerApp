@@ -159,8 +159,7 @@
     <ClCompile Include="libraries\include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="libraries\include\sqlite3\sqlite3.c" />
     <ClCompile Include="PlannerApp.cpp" />
-    <ClCompile Include="Project.cpp" />
-    <ClCompile Include="SubGoal.cpp" />
+    <ClCompile Include="Goal.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,9 +183,8 @@
     <ClInclude Include="libraries\include\imgui\imstb_rectpack.h" />
     <ClInclude Include="libraries\include\imgui\imstb_textedit.h" />
     <ClInclude Include="libraries\include\imgui\imstb_truetype.h" />
-    <ClInclude Include="Project.h" />
     <ClInclude Include="sqlite3\sqlite3.h" />
-    <ClInclude Include="SubGoal.h" />
+    <ClInclude Include="Goal.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

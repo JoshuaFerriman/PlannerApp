@@ -42,10 +42,7 @@
     <ClCompile Include="PlannerApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Project.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SubGoal.cpp">
+    <ClCompile Include="Goal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DataBaseAccessor.cpp">
@@ -104,10 +101,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Project.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SubGoal.h">
+    <ClInclude Include="Goal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DataBaseAccessor.h">
