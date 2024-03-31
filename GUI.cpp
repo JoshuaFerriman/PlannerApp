@@ -257,12 +257,13 @@ void GUI::MainLoop()
 
             if (ImGui::Button("Create Account"))
             {
+
                 strcpy_s(usernameBuff, "");
                 strcpy_s(passwordBuff, "");
 
-                User user(databaseAccessor, username, password);
-                if (true)
+                if (UserCanBeCreated())
                 {
+                    User user(databaseAccessor, username, password);
                     password = "";
                     username = "";
 
@@ -281,23 +282,27 @@ void GUI::MainLoop()
             ImGui::End();
         }
 
-        for (Project project : projects)
+        for (Goal project : projects)
         {
-            ImGui::Begin(project.name.data());
-            ImGui::Text(project.description.data());
+            ImGui::Begin(project.GetNameData());
+            ImGui::Text(project.GetDescriptionData());
 
             ImGui::End();
         }
 
+
+
+
+
         if (newProject)
         {
+
             time_t startDate = NULL;
             time_t dueDate = NULL;
             char str0[128] = "Hello, world!";
             char str1[512] = "Hello, world!";
             int objectiveNum = 0;
             int stepNum = 0;
-
 
             ImGui::Begin("New Project");
 
@@ -317,7 +322,7 @@ void GUI::MainLoop()
 
             if (ImGui::Button("Create new project"))
             {
-                projects.push_back(Project(str0, dueDate, startDate));
+                projects.push_back(Goal(str0, dueDate, startDate));
                 newProject = false;
             }
             ImGui::End();
@@ -367,4 +372,9 @@ void GUI::DBGetProjects()
     {
         projects.push_back(Goal());
     }
+}
+
+bool GUI::UserCanBeCreated()
+{
+    return true;
 }

@@ -9,9 +9,13 @@ int main()
     DatabaseAccessor databaseAccessor;
 
     databaseAccessor.CreateTable(users);
+    databaseAccessor.CreateTable(goals);
+    std::vector<Goal> ActiveProjects = { };
 
     User user(databaseAccessor, "JohnDoe", "password123");
+    //Goal project1(databaseAccessor, "JohnDoe", "password123");
     
+
     databaseAccessor.TableSELECTAll(users);
 
 

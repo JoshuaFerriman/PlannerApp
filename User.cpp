@@ -15,6 +15,15 @@ User::User(DatabaseAccessor& databaseAccessor, std::string username, std::string
 	UserCreateRecord(databaseAccessor);
 }
 
+User::User(std::string username, std::string password)
+{
+	User::username = username;
+	User::salt = GenerateSalt();
+	// std::cout << salt << "\n";
+	User::hashedPassword = SaltAndHashPassword(password, User::salt);
+	// std::cout << hashedPassword << "\n";
+}
+
 User::User()
 {
 

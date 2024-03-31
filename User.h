@@ -33,6 +33,7 @@ protected:
 
 public:
 	User();
+	User(std::string username, std::string password);
 	User(DatabaseAccessor& databaseAccessor, std::string username, std::string password);
 
 	std::string GetUsername();

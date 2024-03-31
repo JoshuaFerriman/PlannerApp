@@ -38,5 +38,6 @@ public:
 	void CloseGUI();
 
 private:
-	void DBGetProjects()
+	void DBGetProjects();
+	bool UserCanBeCreated();
 };
