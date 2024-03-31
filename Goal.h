@@ -1,5 +1,6 @@
 #pragma once
 #include "DataBaseAccessor.h"
+#include "User.h"
 #include <chrono>
 #include <string>
 #include <vector>
@@ -9,10 +10,8 @@ static const Table goals
 {
 	"GOALS",
 	{
-		{"USER_ID", "INTEGER"},
-		{"PARENT_ID", "INTEGER"},
-
-		{"IS_SUBGOAL", "INTEGER"},
+		{"USER_ID", "INTEGER", {"FOREIGN KEY"}},
+		{"PARENT_ID", "INTEGER", {"FOREIGN KEY"}},
 
 		{"GOAL_NAME", "TEXT"},
 		{"DESCRIPTION", "TEXT"},
@@ -31,6 +30,7 @@ class Goal
 {
 	//Member Fields
 protected:
+	int ID = NULL;
 
 	std::string name;
 	std::string description;
@@ -46,7 +46,7 @@ protected:
 	std::vector<Goal> steps = { };
 
 	int stepNumber = NULL;
-	bool complete = false;
+	bool isComplete = false;
 public:
 
 	
@@ -54,16 +54,19 @@ public:
 	//Member Functions
 protected:
 	std::time_t getCurrentDateAndTime();
-	void GoalCreateRecord();
-	void GoalUpdateRecord();
+	bool GoalCreateRecord(DatabaseAccessor& databaseAccessor, Goal ParentGoal);
+	bool GoalCreateRecord(DatabaseAccessor& databaseAccessor, User& currentUser);
+	bool GoalUpdateRecord(DatabaseAccessor& databaseAccessor);
+
 public:
 	Goal();
 	Goal(char* GoalName, time_t dueDate, time_t startDate);
-	Goal(std::string goalName, std::string description, std::string notes, time_t setDate, time_t startDate, time_t dueDate, int stepNumber, bool isComplete);
-	
-	
+	Goal(DatabaseAccessor& databaseAccessor, Goal ParentGoal,std::string goalName, std::string description, std::string notes, time_t setDate, time_t startDate, time_t dueDate, int stepNumber, bool isComplete);
+	Goal(DatabaseAccessor& databaseAccessor, User& currentUser, std::string goalName, std::string description, std::string notes, time_t setDate, time_t startDate, time_t dueDate, int stepNumber, bool isComplete);
+
 	char* GetNameData();
 	char* GetDescriptionData();
+	std::string GetID();
 
 };
 

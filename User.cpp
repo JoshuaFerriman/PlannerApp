@@ -34,6 +34,10 @@ std::string User::GetUsername()
 	return User::username;
 }
 
+std::string User::GetID()
+{
+	return std::to_string(User::ID);
+}
 
 
 /*
@@ -101,7 +105,7 @@ bool User::UserLogin(DatabaseAccessor& databaseAccessor, std::string username, s
 
 	std::string sqlStatement =
 	{
-		"SELECT * from USERS " \
+		"SELECT rowid, * from USERS " \
 
 		"WHERE USERNAME = '" + username + "';"
 	};
@@ -111,14 +115,15 @@ bool User::UserLogin(DatabaseAccessor& databaseAccessor, std::string username, s
 
 	if (userPassAndSalt.size() == 1)
 	{
-		std::string hashedPW = userPassAndSalt[0][1];
-		std::string salt = userPassAndSalt[0][2];
+		std::string hashedPW = userPassAndSalt[0][2];
+		std::string salt = userPassAndSalt[0][3];
 		if (hashedPW == SaltAndHashPassword(password, salt))
 		{
 			login = true;
 			
+			currentUser->ID = std::stoi(userPassAndSalt[0][0]);
+			currentUser->username = userPassAndSalt[0][1];
 			currentUser->hashedPassword = hashedPW;
-			currentUser->username = userPassAndSalt[0][0];
 			currentUser->salt = salt;
 		}
 	}

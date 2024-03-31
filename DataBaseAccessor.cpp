@@ -83,8 +83,13 @@ void DatabaseAccessor::CreateTable(const Table& table)
     for (size_t i = 0; i < table.fields.size(); ++i)
     {
         sqlCreateStatement += "\t" + table.fields[i].fieldName + " " + table.fields[i].fieldType;
-        if (table.fields[i].isUnique) // Add Unique flag if the struct defines it as unique
-            sqlCreateStatement += " UNIQUE";
+        if (table.fields[i].constraints.size() != 0) // Add constraints to the statement if the constraints vector is not empty
+        {
+            for (std::string constraint : table.fields[i].constraints)
+            {
+                sqlCreateStatement += constraint;
+            }
+        }
         if (i != table.fields.size() - 1)  // Check if it is not the last field
             sqlCreateStatement += ",\n";
     }

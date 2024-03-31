@@ -8,7 +8,7 @@ static const Table users
 {
 	"USERS",
 	{
-		{"USERNAME", "TEXT", true},
+		{"USERNAME", "TEXT", {"UNIQUE"}},
 		{"PASSWORD", "TEXT"},
 		{"SALT", "TEXT"},
 	},
@@ -18,6 +18,8 @@ class User
 {
 	//Fields
 protected:
+	int ID = NULL;
+
 	std::string username;
 	std::string hashedPassword;
 	std::string salt;
@@ -37,6 +39,7 @@ public:
 	User(DatabaseAccessor& databaseAccessor, std::string username, std::string password);
 
 	std::string GetUsername();
+	std::string GetID();
 
 	static bool UserLogin(DatabaseAccessor& databaseAccessor, std::string username, std::string password, User* currentUser);
 	

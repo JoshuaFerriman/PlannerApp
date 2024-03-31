@@ -3,11 +3,13 @@
 #include <vector>
 #include <string>
 
-struct Field 
+
+
+struct Field
 {
 	std::string fieldName;
 	std::string fieldType;
-	bool isUnique = false;
+	std::vector<std::string> constraints = {};
 
 };
 

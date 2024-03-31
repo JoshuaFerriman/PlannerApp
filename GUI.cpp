@@ -362,7 +362,7 @@ void GUI::DBGetProjects()
     {
         "SELECT * from GOALS " \
 
-        "WHERE USERNAME = '" + currentUser.GetUsername() + "' AND PARENT_ID IS NULL;"
+        "WHERE USER_ID = '" + currentUser.GetID() + "' AND PARENT_ID IS NULL;"
     };
 
     std::vector<std::vector<std::string>> projectRecords;
